@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Grid</title>
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+
+        
+        <div id="startScreen">
+            <h1>Welcome to Word Grid!</h1>
+            <button onclick="showGame()">Start Game</button>
+        </div>
+    
+        
+
+        <div id="gameContainer" style="display: none;">
+            <h1>Word Grid (5x5 View)</h1>
+
+            <div class="input-container">
+                <input type="text" id="wordInput" placeholder="Enter a word...">
+            </div>
+            
+            <div id="timerDisplay"></div>
+
+            <div id="gameGrid" class="grid"></div>
+        </div>
+        
+        <script>
+            function showGame() {
+                document.getElementById("startScreen").style.display = "none"; // Hide start screen
+                document.getElementById("gameContainer").style.display = "block"; // Show game
+                startTimer();
+            }
+
+            let timer;
+            let secondsLeft = 60; // Timer countdown for 1 minute
+            let gameOver = false;
+
+            // Timer function
+            function startTimer() {
+                document.getElementById("timerDisplay").textContent = `Time Left: ${secondsLeft} seconds`;
+                timer = setInterval(function() {
+                    secondsLeft--;
+                    document.getElementById("timerDisplay").textContent = `Time Left: ${secondsLeft} seconds`;
+
+                    if (secondsLeft <= 0) {
+                        clearInterval(timer); // Stop the timer
+                        endGame(); // Stop the game after 1 minute
+                        }
+                }, 1000);
+            }
+
+            // End game function
+            function endGame() {
+                gameOver = true; // Set game over flag
+                document.getElementById("timerDisplay").textContent = `Final Score: ${score}`;
+                // You can disable the input field when the game is over to prevent further input
+                document.getElementById("wordInput").disabled = true;
+            }
+        </script>
+
+    <script>
+        let rows = 1000;
+        let cols = 1000;
+        
+        let x = 500;
+        let y = 500;
+
+        let score = 0;
+
+        let arrayWords = ["---", "---", "---", "---", "---", "---", "---", "---", "---", "---", 
+            "about", "all", "and", "are", "as", "at", "be", "boy", "but", "by", "can", "cat", "chair", 
+            "do", "each", "for", "from", "had", "have", "he", "his", "how", "if", "in", "is", "it", "not", 
+            "of", "on", "one", "or", "said", "slept", "that", "the", "their", "there", "they", "this", "to", 
+            "today", "tree", "up", "was", "we", "were", "what", "when", "which", "will", "with", "you"];
+
+        let gameArray = [];
+        let gameSpecial = [];
+        let valid = 0;
+
+        function randomWord() {
+            return arrayWords[Math.floor(Math.random() * arrayWords.length)];
+        }
+
+        // Initialize gameArray
+        for (let i = 0; i < rows; i++) {
+            gameArray[i] = [];
+            for (let j = 0; j < cols; j++) {
+                gameArray[i][j] = randomWord();
+            }
+        }
+        for (let i = 0; i < rows; i++) {
+            gameSpecial[i] = [];
+            for (let j = 0; j < cols; j++) {
+                gameSpecial[i][j] = Math.random();
+                if(gameArray[i][j] === "---")
+                {
+                    gameSpecial[i][j] = 0.5;
+                }
+            }
+        }
+
+        function renderGrid() {
+            const gridContainer = document.getElementById("gameGrid");
+            gridContainer.style.gridTemplateColumns = `repeat(5, 100px)`;
+            gridContainer.innerHTML = "";
+
+            for (let i = x - 2; i <= x + 2; i++) {  
+                for (let j = y - 2; j <= y + 2; j++) {  
+                    if(i === x && j === y)
+                    {
+                        let cell = document.createElement("div");
+                        cell.className = "cell";
+                        cell.textContent = score;
+                        cell.style.backgroundColor = "green";
+                        if(valid === 1)
+                        {
+                            cell.style.backgroundColor = "red";
+                        }
+                        gridContainer.appendChild(cell);
+                    }
+                    else
+                    {
+                        if(gameSpecial[i][j] < 0.2)
+                        {
+                            let specialCell = document.createElement("div");
+                            specialCell.className = "specialCell";
+                            specialCell.textContent = gameArray[i][j];
+                            gridContainer.appendChild(specialCell);
+                        }
+                        else
+                        {
+                            let cell = document.createElement("div");
+                            cell.className = "cell";
+                            cell.textContent = gameArray[i][j];
+                            gridContainer.appendChild(cell);
+                        }
+                    }
+                }
+            }
+        }
+
+        function moveGrid() {
+            let inputWord = document.getElementById("wordInput").value.trim().toLowerCase();
+
+            // Check only up, down, left, right (no diagonals)
+            let possibleMoves = [
+                { dx: -1, dy: 0 }, // Up
+                { dx:  1, dy: 0 }, // Down
+                { dx:  0, dy: -1 }, // Left
+                { dx:  0, dy: 1 }  // Right
+            ];
+
+            for (let move of possibleMoves) {
+                let newX = x + move.dx;
+                let newY = y + move.dy;
+                if (gameArray[newX][newY].toLowerCase() === inputWord) {
+                    if(inputWord == "---")
+                    {
+                        score = Math.max(0, score-3);
+                        valid = 1;
+                        document.getElementById("wordInput").value = "";
+                        renderGrid();
+                        return;
+                    }
+                    valid = 0;
+                    x = newX;
+                    y = newY;
+                    score = score + 1;
+                    if(gameSpecial[newX][newY] < 0.2)
+                    {
+                        score = score + 2;
+                    }
+                    gameArray[x][y] = randomWord();
+                    gameSpecial[x][y] = 0.5;
+                    renderGrid(); // Update grid after moving
+                    document.getElementById("wordInput").value = ""; // Clear input
+                    return;
+                }
+            }
+            score = Math.max(0, score- 3);
+            document.getElementById("wordInput").value = "";
+            valid = 1;
+            renderGrid();
+        }
+
+        // Listen for "Enter" key in the input field
+        document.getElementById("wordInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                moveGrid(); // Call move function when Enter is pressed
+            }
+        });
+
+        renderGrid();
+    </script>
+</body>
+</html>
