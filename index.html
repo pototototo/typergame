@@ -10,8 +10,10 @@
 
         
         <div id="startScreen">
-            <h1>Welcome to Word Grid!</h1>
-            <button onclick="showGame()">Start Game</button>
+            <h1>Typer Game!</h1>
+            <button onclick="showGame(60)">1:00</button>
+            <button onclick="showGame(120)">2:00</button>
+            <button onclick="showGame(180)">3:00</button>
         </div>
     
         
@@ -29,15 +31,17 @@
         </div>
         
         <script>
-            function showGame() {
-                document.getElementById("startScreen").style.display = "none"; // Hide start screen
-                document.getElementById("gameContainer").style.display = "block"; // Show game
-                startTimer();
-            }
 
             let timer;
             let secondsLeft = 60; // Timer countdown for 1 minute
             let gameOver = false;
+
+            function showGame(a) {
+                secondsLeft = a;
+                document.getElementById("startScreen").style.display = "none"; // Hide start screen
+                document.getElementById("gameContainer").style.display = "block"; // Show game
+                startTimer();
+            }
 
             // Timer function
             function startTimer() {
