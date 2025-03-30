@@ -11,9 +11,9 @@
         
         <div id="startScreen">
             <h1>Typer Game!</h1>
-            <button onclick="showGame(60)">1:00</button>
-            <button onclick="showGame(120)">2:00</button>
-            <button onclick="showGame(180)">3:00</button>
+            <button onclick="showGame(60)">Hard</button>
+            <button onclick="showGame(90)">Medium</button>
+            <button onclick="showGame(120)">Easy</button>
         </div>
     
         
@@ -34,10 +34,12 @@
 
             let timer;
             let secondsLeft = 60; // Timer countdown for 1 minute
+            let initialSeconds = 60;
             let gameOver = false;
 
             function showGame(a) {
                 secondsLeft = a;
+                initialSeconds = a;
                 document.getElementById("startScreen").style.display = "none"; // Hide start screen
                 document.getElementById("gameContainer").style.display = "block"; // Show game
                 startTimer();
@@ -75,11 +77,45 @@
 
         let score = 0;
 
-        let arrayWords = ["---", "---", "---", "---", "---", "---", "---", "---", "---", "---", 
-            "about", "all", "and", "are", "as", "at", "be", "boy", "but", "by", "can", "cat", "chair", 
-            "do", "each", "for", "from", "had", "have", "he", "his", "how", "if", "in", "is", "it", "not", 
-            "of", "on", "one", "or", "said", "slept", "that", "the", "their", "there", "they", "this", "to", 
-            "today", "tree", "up", "was", "we", "were", "what", "when", "which", "will", "with", "you"];
+        let arrayWords = ["---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---",
+    "about", "agree", "apple", "beach", "black", "block", "board", "brave", "bring",
+    "chair", "clear", "cloud", "coast", "dance", "depth", "dream", "earth", "equal",
+    "faith", "field", "flame", "float", "force", "fresh", "fruit", "giant", "globe",
+    "grace", "grand", "green", "happy", "heart", "honor", "house", "human", "ideal",
+    "image", "input", "issue", "joker", "large", "light", "lucky", "magic", "major",
+    "maple", "match", "money", "motor", "music", "noble", "ocean", "offer", "orbit",
+    "party", "peace", "pilot", "plant", "power", "pride", "quick", "quiet", "rider",
+    "rival", "rocky", "royal", "rural", "saint", "scale", "score", "serve", "shade",
+    "sharp", "short", "sight", "skill", "smart", "solid", "space", "spare", "spice",
+    "spine", "sport", "start", "steam", "stone", "storm", "sunny", "table", "taste",
+    "theme", "thick", "thing", "tiger", "title", "total", "tough", "trace", "train",
+    "trend", "trust", "union", "urban", "vivid", "voice", "wagon", "water", "white",
+    "wider", "world", "wrist", "write", "youth", "zebra",
+    
+    "cool", "dark", "easy", "fast", "fire", "free", "game", "gold", "gray",
+    "hard", "high", "hope", "jazz", "kind", "lake", "leaf", "luck", "moon",
+    "nice", "open", "park", "pink", "quiz", "rain", "road", "rock", "safe",
+    "salt", "sand", "snow", "soft", "star", "talk", "time", "tree", "warm",
+    "wind", "wise", "wood", "zoom",
+    
+    "act", "age", "air", "art", "bad", "bag", "bat", "box", "cap",
+    "car", "cat", "cut", "day", "dog", "dot", "ear", "eat", "egg",
+    "fan", "far", "fox", "fun", "gap", "god", "gym", "hat", "hot",
+    "ice", "jam", "jar", "key", "law", "log", "man", "map", "nap",
+    "net", "oil", "owl", "pan", "pen", "pet", "pot", "rat", "ray",
+    "red", "rug", "run", "sad", "sea", "sit", "sky", "sun", "top",
+    "toy", "van", "win", "zip"];
+
+        let arrayWords2 = ["abandon", "beneath", "capture", "darkness", "elastic", "fragile", "gravity", "horizon",
+    "impress", "journey", "kingdom", "library", "mystery", "network", "obscure", "pioneer",
+    "quantum", "remorse", "shelter", "tension", "ultimate", "venture", "whisper", "zealous",
+    "accident", "balance", "careful", "distant", "economy", "fortune", "genuine", "harmony",
+    "illusion", "justice", "kitchen", "luggage", "monitor", "nurture", "opinion", "precise",
+    "qualify", "rebuild", "strange", "trouble", "upgrade", "victory", "warning", "zephyr", 
+    "abyssal", "backdrop", "calligraphy", "diligence", "eloquent", "frostbite", "gargoyle", 
+    "hazelnut", "infinity", "jubilant", "kneecaps", "labyrinth", "mystique", "nightmare", 
+    "overcome", "paradoxical", "quagmire", "reckoning", "serenity", "turbulent", "unearthly", 
+    "vigilance", "whimsical", "xylophone", "yielding", "zealotry"]
 
         let gameArray = [];
         let gameSpecial = [];
@@ -88,21 +124,45 @@
         function randomWord() {
             return arrayWords[Math.floor(Math.random() * arrayWords.length)];
         }
+        
+        function randomSpecialWord(){
+            return arrayWords2[Math.floor(Math.random() * arrayWords2.length)];
+        }
 
         // Initialize gameArray
         for (let i = 0; i < rows; i++) {
-            gameArray[i] = [];
-            for (let j = 0; j < cols; j++) {
-                gameArray[i][j] = randomWord();
-            }
-        }
-        for (let i = 0; i < rows; i++) {
             gameSpecial[i] = [];
             for (let j = 0; j < cols; j++) {
-                gameSpecial[i][j] = Math.random();
-                if(gameArray[i][j] === "---")
+                let randy = Math.random();
+                if(randy < 0.01)
                 {
-                    gameSpecial[i][j] = 0.5;
+                    gameSpecial[i][j] = 4;
+                }
+                else if(randy < 0.03)
+                {
+                    gameSpecial[i][j] = 3;
+                }
+                else if(randy < 0.20)
+                {
+                    gameSpecial[i][j] = 2;
+                }
+                else
+                {
+                    gameSpecial[i][j] = 1;
+                }
+            }
+        }
+
+        for (let i = 0; i < rows; i++) {
+            gameArray[i] = [];
+            for (let j = 0; j < cols; j++) {
+                if(gameSpecial[i][j] > 1)
+                {
+                    gameArray[i][j] = randomSpecialWord();
+                }
+                else
+                {
+                    gameArray[i][j] = randomWord();
                 }
             }
         }
@@ -128,12 +188,32 @@
                     }
                     else
                     {
-                        if(gameSpecial[i][j] < 0.2)
+                        if(gameSpecial[i][j] === 2)
                         {
-                            let specialCell = document.createElement("div");
-                            specialCell.className = "specialCell";
-                            specialCell.textContent = gameArray[i][j];
-                            gridContainer.appendChild(specialCell);
+                            let cell = document.createElement("div");
+                            cell.className = "cell";
+                            cell.textContent = gameArray[i][j];
+                            cell.style.backgroundColor = "cyan";
+                            cell.style.borderColor = "blue";
+                            gridContainer.appendChild(cell);
+                        }
+                        else if(gameSpecial[i][j] === 3)
+                        {
+                            let cell = document.createElement("div");
+                            cell.className = "cell";
+                            cell.textContent = gameArray[i][j];
+                            cell.style.backgroundColor = "#fa63ff";
+                            cell.style.borderColor = "#b800bf";
+                            gridContainer.appendChild(cell);
+                        }
+                        else if(gameSpecial[i][j] === 4)
+                        {
+                            let cell = document.createElement("div");
+                            cell.className = "cell";
+                            cell.textContent = gameArray[i][j];
+                            cell.style.backgroundColor = "#00ff39";
+                            cell.style.borderColor = "#2ea549";
+                            gridContainer.appendChild(cell);
                         }
                         else
                         {
@@ -174,18 +254,27 @@
                     x = newX;
                     y = newY;
                     score = score + 1;
-                    if(gameSpecial[newX][newY] < 0.2)
+                    if(gameSpecial[newX][newY] === 2)
                     {
                         score = score + 2;
                     }
+                    if(gameSpecial[newX][newY] === 3)
+                    {
+                        secondsLeft = secondsLeft + initialSeconds/12;
+                        document.getElementById("timerDisplay").textContent = `Time Left: ${secondsLeft} seconds`;
+                    }
+                    if(gameSpecial[newX][newY] === 4)
+                    {
+                        score = score * 2;
+                    }
                     gameArray[x][y] = randomWord();
-                    gameSpecial[x][y] = 0.5;
+                    gameSpecial[x][y] = 1;
                     renderGrid(); // Update grid after moving
                     document.getElementById("wordInput").value = ""; // Clear input
                     return;
                 }
             }
-            score = Math.max(0, score- 3);
+            score = Math.max(0, score-3);
             document.getElementById("wordInput").value = "";
             valid = 1;
             renderGrid();
